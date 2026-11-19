@@ -83,10 +83,15 @@ get_layout_x11() {
 }
 
 # macOS
+# This one get's first 2 charcter from the layout name
+# Exp Hungarian = HU 
 get_layout_macos() {
   defaults read ~/Library/Preferences/com.apple.HIToolbox.plist \
-    AppleSelectedInputSources 2>/dev/null |
-    grep -oP '(?<="KeyboardLayout Name" = ")[^"]+' | head -1
+  AppleSelectedInputSources 2>/dev/null |
+  sed -nE 's/^[[:space:]]*"KeyboardLayout Name" = "?([^";]+)"?;[[:space:]]*$/\1/p' |
+  tr -d '.' |
+  cut -c1-2 |
+  tr '[:lower:]' '[:upper:]'
 }
 
 # ─── Environment detection ───────────────────────────────────────
